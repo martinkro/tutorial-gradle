@@ -1,0 +1,59 @@
+apply plugin:'java'
+apply plugin:'idea'
+
+repositories{
+    mavenCentral()
+}
+
+ext{
+    unitJavaSrcDir = 'src/test/unit/java'
+    unitResourceSrcDir = 'src/test/unit/resources'
+    intJavaSrcDir = 'src/test/integration/java'
+    intResourceSrcDir = 'src/test/integration/resources'
+}
+
+sourceSets{
+    test{
+        java{
+            srcDir unitJavaSrcDir
+        }
+        resources{
+            srcDir unitResourceSrcDir
+        }
+    }
+    intTest{
+        java{
+            srcDir intJavaSrcDir
+        }
+        resources{
+            srcDir intResourceSrcDir
+        }
+    }
+}
+
+dependencies{
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.mockito:mockito-core:1.9.5'
+    
+    runtime files('lib/jdom.jar','lib/commons-io-2.4.jar')
+    runtime fileTree(dir:'lib',include:'*.jar')
+    
+    intTestCompile sourceSets.main.output
+    intTestCompile configurations.testCompile
+}
+
+task integrationTest(type:Test){
+    testClassesDir = sourceSets.intTest.output.classesDir
+    classpath = sourceSets.intTest.runtimeClasspath
+}
+
+check.dependsOn integrationTest
+
+idea {
+    module{
+        testSourceDirs += file(unitJavaSrcDir)
+        testSourceDirs += file(unitResourceSrcDir)
+        testSourceDirs += file(intJavaSrcDir)
+        testSourceDirs += file(intResourceSrcDir)
+    }
+}
