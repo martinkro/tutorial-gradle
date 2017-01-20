@@ -1,0 +1,9 @@
+println "the project name is $name"
+task hello{
+    println "the current task name is $name"
+    println "hello,world"
+}
+
+task intro(dependsOn:hello){
+    println "I am gradle"
+}

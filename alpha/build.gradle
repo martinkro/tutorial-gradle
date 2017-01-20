@@ -1,0 +1,11 @@
+allprojects{
+    task hello {task -> println "I'm $task.project.name" }
+}
+
+subprojects{
+    hello { doLast{println "- I am the sub project of A"}}
+}
+
+project(':core').hello{
+    println "- I'm the core component and provide service for other parts."
+}
