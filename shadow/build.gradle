@@ -1,0 +1,49 @@
+plugins {
+  id 'com.github.johnrengelman.shadow' version '1.2.4'
+}
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = '1.0'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.personal.date.DateUtils'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+jar{
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.personal.date.DateUtils'
+    }
+}
+
+//Get dependencies from Maven central repository
+repositories {
+    mavenCentral()
+}
+
+shadowJar{
+    baseName = 'shadow'
+    classifier = null
+    version = null
+    
+    manifest {
+        inheritFrom project.tasks.jar.manifest
+    }
+}
+
+//Project dependencies
+dependencies {
+	compile 'ch.qos.logback:logback-classic:1.1.2'
+}
