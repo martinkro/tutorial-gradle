@@ -1,0 +1,30 @@
+apply plugin:'java'
+apply plugin:'eclipse'
+
+repositories{
+    mavenCentral()
+}
+
+dependencies{
+    compile 'org.mindrot:jbcrypt:0.3m'
+}
+
+jar{
+    from{
+        (configurations.runtime).collect{
+            it.isDirectory()?it:zipTree(it)
+        }
+    }
+    
+    manifest{
+        attributes("Main-Class":"Main")
+    }
+}
+
+sourceSets{
+    main{
+        java{
+            srcDirs=['src']
+        }
+    }
+}
